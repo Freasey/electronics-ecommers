@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import Badge from '@/components/ui/Badge'
 import { cn } from '@/lib/utils'
 
@@ -74,12 +75,12 @@ export default function ElectronicProductCard({
         <span className="text-xs uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-500">
           Kode Produk {id.toString().padStart(3, '0')}
         </span>
-        <button
-          type="button"
+        <Link
+          href={`/produk/${id}`}
           className="rounded-lg border border-neutral-300 dark:border-neutral-700 px-3 py-1.5 text-xs font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
         >
           Lihat Detail
-        </button>
+        </Link>
       </div>
     </article>
   )

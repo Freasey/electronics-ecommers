@@ -11,7 +11,7 @@ export default function FeaturedProductSection() {
           Pilihan Utama
         </p>
         <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900 dark:text-white">
-          Recent Product
+          Produk Unggulan Kami
         </h2>
       </div>
 

@@ -140,7 +140,7 @@ export default function SearchSection() {
 
       <div className="mb-6">
         <p className="text-[11px] font-mono text-neutral-400 dark:text-neutral-500 uppercase tracking-widest mb-2.5">
-          Recent Product
+          Kata Kunci Umum
         </p>
         <div className="flex flex-wrap gap-2">
           {recentProducts.map((productName) => (
