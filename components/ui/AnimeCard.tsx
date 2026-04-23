@@ -1,189 +1,109 @@
-"use client";
-
-import { useState } from "react";
+import Badge from '@/components/ui/Badge'
+import { cn } from '@/lib/utils'
 
 export interface AnimeCardProps {
-  title: string;
-  episode: string;
-  genre: string;
-  rating: number;
-  thumbnail: string;
-  isNew?: boolean;
+  id: number
+  title: string
+  genres: string[]
+  totalEpisodes: number
+  rating: number
+  status: 'Tayang' | 'Selesai'
+  posterColor: string
+  featured?: boolean
 }
 
 export default function AnimeCard({
   title,
-  episode,
-  genre,
+  genres,
+  totalEpisodes,
   rating,
-  thumbnail,
-  isNew,
+  status,
+  posterColor,
+  featured = false,
 }: AnimeCardProps) {
-  const [hovered, setHovered] = useState(false);
-
   return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        position: "relative",
-        borderRadius: "12px",
-        overflow: "hidden",
-        cursor: "pointer",
-        flexShrink: 0,
-        width: "200px",
-        background: "#0C0E24",
-        transform: hovered ? "translateY(-6px) scale(1.02)" : "translateY(0) scale(1)",
-        transition: "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease",
-        boxShadow: hovered
-          ? "0 20px 48px rgba(0, 245, 220, 0.18), 0 8px 24px rgba(0,0,0,0.6)"
-          : "0 4px 16px rgba(0,0,0,0.4)",
-      }}
+    <article
+      className={cn(
+        'group relative flex flex-col overflow-hidden rounded-lg border cursor-pointer',
+        'border-neutral-200 dark:border-neutral-800',
+        'bg-white dark:bg-neutral-900',
+        'hover:border-neutral-400 dark:hover:border-neutral-600',
+        'transition-all duration-300 hover:-translate-y-0.5',
+        featured && 'md:col-span-2'
+      )}
     >
-      {/* Thumbnail */}
+      {/* Poster Area */}
       <div
-        style={{
-          width: "100%",
-          height: "270px",
-          background: thumbnail,
-          position: "relative",
-          overflow: "hidden",
-        }}
+        className={cn(
+          'relative overflow-hidden',
+          featured ? 'aspect-[16/9]' : 'aspect-[2/3]'
+        )}
+        style={{ background: posterColor }}
       >
         {/* Gradient overlay */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: hovered
-              ? "linear-gradient(to top, rgba(4,6,26,0.95) 0%, rgba(4,6,26,0.2) 60%, transparent 100%)"
-              : "linear-gradient(to top, rgba(4,6,26,0.8) 0%, transparent 60%)",
-            transition: "background 0.3s ease",
-          }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-        {/* Play button on hover */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            opacity: hovered ? 1 : 0,
-            transition: "opacity 0.3s ease",
-          }}
-        >
-          <div
-            style={{
-              width: "48px",
-              height: "48px",
-              background: "rgba(0, 245, 220, 0.9)",
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "18px",
-              color: "#04061A",
-            }}
+        {/* Status badge */}
+        <div className="absolute top-2.5 right-2.5">
+          <span
+            className={cn(
+              'text-[10px] font-medium px-1.5 py-0.5 rounded',
+              status === 'Tayang'
+                ? 'bg-white/20 text-white backdrop-blur-sm border border-white/20'
+                : 'bg-black/30 text-white/80 backdrop-blur-sm border border-white/10'
+            )}
           >
-            ▶
-          </div>
+            {status === 'Tayang' ? '● Tayang' : status}
+          </span>
         </div>
-
-        {/* Badge NEW */}
-        {isNew && (
-          <div
-            style={{
-              position: "absolute",
-              top: "10px",
-              left: "10px",
-              background: "#FF2D55",
-              color: "#fff",
-              fontSize: "0.65rem",
-              fontWeight: 800,
-              letterSpacing: "0.1em",
-              padding: "2px 8px",
-              borderRadius: "4px",
-              fontFamily: "'Syne', sans-serif",
-            }}
-          >
-            BARU
-          </div>
-        )}
 
         {/* Rating */}
-        <div
-          style={{
-            position: "absolute",
-            top: "10px",
-            right: "10px",
-            background: "rgba(4,6,26,0.7)",
-            backdropFilter: "blur(8px)",
-            color: "#FFD700",
-            fontSize: "0.7rem",
-            fontWeight: 700,
-            padding: "3px 8px",
-            borderRadius: "4px",
-            fontFamily: "'DM Sans', sans-serif",
-            display: "flex",
-            alignItems: "center",
-            gap: "3px",
-          }}
-        >
-          ★ {rating}
+        <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1">
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            className="text-yellow-400"
+          >
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>
+          <span className="text-[11px] font-medium text-white">{rating.toFixed(1)}</span>
+        </div>
+
+        {/* Hover play button */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="w-11 h-11 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="text-white translate-x-0.5"
+            >
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+          </div>
         </div>
       </div>
 
-      {/* Info */}
-      <div style={{ padding: "0.75rem 0.9rem 0.9rem" }}>
-        <p
-          style={{
-            margin: 0,
-            fontFamily: "'Syne', sans-serif",
-            fontWeight: 700,
-            fontSize: "0.875rem",
-            color: "#EAEAF5",
-            lineHeight: 1.3,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
+      {/* Info Area */}
+      <div className="flex flex-col gap-1.5 p-3">
+        <h3 className="text-sm font-medium text-neutral-900 dark:text-neutral-100 leading-snug line-clamp-2">
           {title}
-        </p>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginTop: "0.4rem",
-          }}
-        >
-          <span
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "0.72rem",
-              color: "rgba(255,255,255,0.4)",
-            }}
-          >
-            {episode}
-          </span>
-          <span
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "0.68rem",
-              color: "#00F5DC",
-              background: "rgba(0, 245, 220, 0.1)",
-              padding: "1px 7px",
-              borderRadius: "4px",
-              border: "1px solid rgba(0, 245, 220, 0.2)",
-            }}
-          >
-            {genre}
+        </h3>
+
+        <div className="flex items-center justify-between">
+          <div className="flex flex-wrap gap-1">
+            {genres.slice(0, 2).map((genre) => (
+              <Badge key={genre} label={genre} />
+            ))}
+          </div>
+          <span className="text-[11px] text-neutral-400 dark:text-neutral-500 font-mono shrink-0 ml-2">
+            {totalEpisodes} eps
           </span>
         </div>
       </div>
-    </div>
-  );
+    </article>
+  )
 }
