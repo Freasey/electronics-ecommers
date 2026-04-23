@@ -3,8 +3,8 @@ import ThemeToggle from '@/components/ui/ThemeToggle'
 
 const navigationLinks = [
   { label: 'Beranda', href: '/' },
-  { label: 'Jadwal', href: '/jadwal' },
-  { label: 'Populer', href: '/#populer' },
+  { label: 'Produk', href: '/#produk-unggulan' },
+  { label: 'Kategori', href: '/#kategori' },
 ]
 
 export default function NavigationBar() {
@@ -30,11 +30,12 @@ export default function NavigationBar() {
                 strokeLinejoin="round"
                 className="text-white dark:text-black"
               >
-                <polygon points="5 3 19 12 5 21 5 3" />
+                <rect x="4" y="5" width="16" height="10" rx="2" />
+                <path d="M2 19h20" />
               </svg>
             </div>
             <span className="text-sm font-semibold tracking-tight text-neutral-900 dark:text-white">
-              AniStream
+              Aditek Elektronik
             </span>
           </Link>
 
@@ -55,7 +56,7 @@ export default function NavigationBar() {
           {/* Search Button */}
           <Link
             href="/cari"
-            aria-label="Cari anime"
+            aria-label="Cari produk"
             className="w-9 h-9 flex items-center justify-center rounded-full border border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-150"
           >
             <svg
@@ -81,13 +82,13 @@ export default function NavigationBar() {
             href="/masuk"
             className="hidden sm:inline-flex items-center px-3.5 py-1.5 text-sm font-medium rounded-md border border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors duration-150"
           >
-            Masuk
+            Login
           </Link>
           <Link
             href="/daftar"
             className="inline-flex items-center px-3.5 py-1.5 text-sm font-medium rounded-md bg-neutral-900 dark:bg-white text-white dark:text-black hover:bg-neutral-700 dark:hover:bg-neutral-200 transition-colors duration-150"
           >
-            Daftar
+            Registrasi
           </Link>
         </div>
       </nav>

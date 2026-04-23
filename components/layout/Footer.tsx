@@ -5,18 +5,18 @@ const footerSections = [
     heading: 'Jelajahi',
     links: [
       { label: 'Beranda', href: '/' },
-      { label: 'Populer', href: '/populer' },
-      { label: 'Terbaru', href: '/terbaru' },
-      { label: 'Jadwal Tayang', href: '/jadwal' },
+      { label: 'Produk Unggulan', href: '/#produk-unggulan' },
+      { label: 'Kategori', href: '/#kategori' },
+      { label: 'Pencarian', href: '/cari' },
     ],
   },
   {
-    heading: 'Genre',
+    heading: 'Kategori',
     links: [
-      { label: 'Action', href: '/genre/action' },
-      { label: 'Romance', href: '/genre/romance' },
-      { label: 'Fantasy', href: '/genre/fantasy' },
-      { label: 'Slice of Life', href: '/genre/slice-of-life' },
+      { label: 'Televisi', href: '#' },
+      { label: 'Laptop', href: '#' },
+      { label: 'Audio', href: '#' },
+      { label: 'Perangkat Rumah', href: '#' },
     ],
   },
   {
@@ -50,15 +50,16 @@ export default function Footer() {
                   strokeLinejoin="round"
                   className="text-white dark:text-black"
                 >
-                  <polygon points="5 3 19 12 5 21 5 3" />
+                    <rect x="4" y="5" width="16" height="10" rx="2" />
+                    <path d="M2 19h20" />
                 </svg>
               </div>
               <span className="text-sm font-semibold text-neutral-900 dark:text-white">
-                AniStream
+                  Aditek Elektronik
               </span>
             </div>
             <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed max-w-[180px]">
-              Tonton anime favoritmu dengan kualitas terbaik, kapan saja dan di mana saja.
+                Solusi belanja produk elektronik modern dengan kualitas terjamin dan pengiriman cepat.
             </p>
           </div>
 
@@ -86,7 +87,7 @@ export default function Footer() {
 
         <div className="mt-10 pt-6 border-t border-neutral-100 dark:border-neutral-800/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p className="text-[11px] text-neutral-400 dark:text-neutral-600">
-            © {new Date().getFullYear()} AniStream. Seluruh hak cipta dilindungi.
+            © {new Date().getFullYear()} Aditek Elektronik. Seluruh hak cipta dilindungi.
           </p>
           <p className="text-[11px] text-neutral-400 dark:text-neutral-600 font-mono">
             v1.0.0

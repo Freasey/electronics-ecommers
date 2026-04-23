@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import SearchSection from '@/components/features/SearchSection'
 
 export const metadata: Metadata = {
-  title: 'Cari Anime',
-  description: 'Cari anime favoritmu berdasarkan judul, genre, atau kata kunci populer.',
+  title: 'Cari Produk Elektronik',
+  description: 'Cari produk elektronik berdasarkan nama, kategori, dan daftar recent product.',
 }
 
 export default function HalamanPencarian() {

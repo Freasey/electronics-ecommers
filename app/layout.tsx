@@ -17,10 +17,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | AniStream',
-    default: 'AniStream — Tonton Anime Subtitle Indonesia',
+    template: '%s | Aditek Elektronik',
+    default: 'Aditek Elektronik - Solusi Produk Elektronik Modern',
   },
-  description: 'Platform streaming anime terlengkap dengan subtitle Indonesia.',
+  description: 'Aplikasi penjualan produk elektronik dengan antarmuka modern dan sederhana.',
 }
 
 export default function RootLayout({

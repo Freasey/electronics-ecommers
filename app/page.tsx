@@ -1,16 +1,16 @@
 import type { Metadata } from 'next'
-import HeroSection from '@/components/features/HeroSection'
-import AnimeCarousel from '@/components/features/AnimeCarousel'
-import GenreSection from '@/components/features/GenreSection'
+import ElectronicHeroSection from '@/components/features/ElectronicHeroSection'
+import FeaturedProductSection from '@/components/features/FeaturedProductSection'
+import CategoryHighlightSection from '@/components/features/CategoryHighlightSection'
 
 export const metadata: Metadata = {
-  title: 'AniStream — Tonton Anime Subtitle Indonesia',
+  title: 'Adite - Beranda',
   description:
-    'Platform streaming anime terlengkap dengan subtitle Indonesia. Ribuan judul dari berbagai genre tersedia gratis.',
-  keywords: ['anime', 'streaming', 'subtitle indonesia', 'nonton anime', 'anime gratis'],
+    'Aplikasi penjualan produk elektronik dengan tampilan modern monochrome dan navigasi sederhana.',
+  keywords: ['elektronik', 'ecommerce', 'produk elektronik', 'aditek', 'belanja online'],
   openGraph: {
-    title: 'AniStream — Tonton Anime Subtitle Indonesia',
-    description: 'Platform streaming anime terlengkap dengan subtitle Indonesia.',
+    title: 'Aditek',
+    description: 'Belanja produk elektronik modern dengan pengalaman visual monochrome.',
     type: 'website',
   },
 }
@@ -18,9 +18,9 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-white dark:bg-black">
-      <HeroSection />
-      <AnimeCarousel />
-      <GenreSection />
+      <ElectronicHeroSection />
+      <FeaturedProductSection />
+      <CategoryHighlightSection />
     </main>
   )
 }
