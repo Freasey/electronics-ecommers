@@ -51,6 +51,15 @@ export default function DashboardLayout({
                 </Link>
               ))}
             </nav>
+
+            <form action="/api/auth/logout" method="POST" className="mt-4 px-2">
+              <button
+                type="submit"
+                className="w-full h-10 rounded-lg border border-red-200 dark:border-red-900/60 text-sm font-medium text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+              >
+                Logout
+              </button>
+            </form>
           </aside>
 
           <div className="lg:col-span-9">{children}</div>
