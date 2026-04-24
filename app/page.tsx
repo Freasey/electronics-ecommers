@@ -4,7 +4,7 @@ import FeaturedProductSection from '@/components/features/FeaturedProductSection
 import CategoryHighlightSection from '@/components/features/CategoryHighlightSection'
 
 export const metadata: Metadata = {
-  title: 'Adite - Beranda',
+  title: 'Aditek - Beranda',
   description:
     'Aplikasi penjualan produk elektronik dengan tampilan modern monochrome dan navigasi sederhana.',
   keywords: ['elektronik', 'ecommerce', 'produk elektronik', 'aditek', 'belanja online'],

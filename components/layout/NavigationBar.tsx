@@ -1,5 +1,7 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import ThemeToggle from '@/components/ui/ThemeToggle'
+import logo from '@/app/icon.png'
 
 const navigationLinks = [
   { label: 'Beranda', href: '/' },
@@ -18,21 +20,13 @@ export default function NavigationBar() {
             href="/"
             className="flex items-center gap-2 shrink-0 mr-4"
           >
-            <div className="w-6 h-6 rounded bg-neutral-900 dark:bg-white flex items-center justify-center">
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="text-white dark:text-black"
-              >
-                <rect x="4" y="5" width="16" height="10" rx="2" />
-                <path d="M2 19h20" />
-              </svg>
+            <div className="h-6 w-12 rounded-sm px-1 bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center overflow-hidden">
+              <Image
+                src={logo}
+                alt="Logo ADI"
+                className="w-full h-full object-contain"
+                priority
+              />
             </div>
             <span className="text-sm font-semibold tracking-tight text-neutral-900 dark:text-white">
               Aditek Elektronik
@@ -80,15 +74,15 @@ export default function NavigationBar() {
 
           <Link
             href="/masuk"
-            className="hidden sm:inline-flex items-center px-3.5 py-1.5 text-sm font-medium rounded-md border border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors duration-150"
+            className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors duration-150"
           >
-            Login
+            Masuk
           </Link>
           <Link
             href="/daftar"
             className="inline-flex items-center px-3.5 py-1.5 text-sm font-medium rounded-md bg-neutral-900 dark:bg-white text-white dark:text-black hover:bg-neutral-700 dark:hover:bg-neutral-200 transition-colors duration-150"
           >
-            Registrasi
+            Daftar
           </Link>
         </div>
       </nav>
