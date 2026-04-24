@@ -11,17 +11,9 @@ type AuthSectionProps = {
   mode: AuthMode
 }
 
-const AUTH_API_BASE_URL = process.env.NEXT_PUBLIC_AUTH_API_BASE_URL ?? ''
-
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 export default function AuthSection({ mode }: AuthSectionProps) {
   const router = useRouter()
   const isLogin = mode === 'login'
-  const hasApiBaseUrl = AUTH_API_BASE_URL.trim().length > 0
-  const [enableBypass, setEnableBypass] = useState(!hasApiBaseUrl)
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -36,20 +28,20 @@ export default function AuthSection({ mode }: AuthSectionProps) {
     () =>
       isLogin
         ? {
-            eyebrow: 'Akses Akun',
-            title: 'Masuk ke akun Anda',
-            subtitle: 'Lanjutkan belanja elektronik favorit Anda dengan pengalaman yang lebih personal.',
+            eyebrow: 'Akses Portal Proyek',
+            title: 'Masuk ke portal perusahaan Anda',
+            subtitle: 'Lanjutkan pengelolaan kebutuhan security system dan infrastruktur dalam satu dashboard.',
             submitText: 'Masuk',
-            altPrompt: 'Belum punya akun?',
-            altLinkLabel: 'Daftar sekarang',
+            altPrompt: 'Belum punya akun perusahaan?',
+            altLinkLabel: 'Daftarkan sekarang',
             altHref: '/daftar',
           }
         : {
-            eyebrow: 'Buat Akun',
-            title: 'Daftar akun baru',
-            subtitle: 'Siapkan akun untuk checkout lebih cepat dan pantau riwayat transaksi Anda nanti.',
-            submitText: 'Buat Akun',
-            altPrompt: 'Sudah punya akun?',
+            eyebrow: 'Registrasi Perusahaan',
+            title: 'Daftarkan akun perusahaan baru',
+            subtitle: 'Buka akses ke katalog B2B, proposal teknis, dan alur pengadaan yang lebih terstruktur.',
+            submitText: 'Daftarkan Akun',
+            altPrompt: 'Sudah punya akun perusahaan?',
             altLinkLabel: 'Masuk di sini',
             altHref: '/masuk',
           },
@@ -83,13 +75,12 @@ export default function AuthSection({ mode }: AuthSectionProps) {
   }
 
   async function submitToApi() {
-    const endpoint = isLogin ? '/auth/login' : '/auth/register'
+    const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register'
     const payload = isLogin
       ? { email: email.trim(), password }
       : { name: name.trim(), email: email.trim(), password }
 
-    // Endpoint ini siap dipakai saat API auth sudah tersedia.
-    const response = await fetch(`${AUTH_API_BASE_URL}${endpoint}`, {
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -127,27 +118,15 @@ export default function AuthSection({ mode }: AuthSectionProps) {
     setIsSubmitting(true)
 
     try {
-      if (enableBypass) {
-        await delay(500)
-        setSuccessMessage(
-          isLogin
-            ? 'Bypass aktif. Anda masuk sebagai pengguna demo.'
-            : 'Bypass aktif. Pendaftaran demo berhasil, lanjut ke login.'
-        )
-
-        if (isLogin) {
-          router.push('/')
-        } else {
-          router.push('/masuk')
-        }
-        return
-      }
-
       await submitToApi()
-      setSuccessMessage(isLogin ? 'Login berhasil.' : 'Registrasi berhasil. Silakan login.')
+      setSuccessMessage(
+        isLogin
+          ? 'Login berhasil.'
+          : 'Registrasi berhasil. Cek email Anda untuk verifikasi, lalu login.'
+      )
 
       if (isLogin) {
-        router.push('/')
+        router.push('/dashboard')
       } else {
         router.push('/masuk')
       }
@@ -176,12 +155,10 @@ export default function AuthSection({ mode }: AuthSectionProps) {
           <div className="space-y-4">
             <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white/90 dark:bg-neutral-900/70 p-4">
               <p className="text-xs uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-500 mb-1">
-                Status API Auth
+                Status Auth
               </p>
               <p className="text-sm text-neutral-700 dark:text-neutral-300">
-                {hasApiBaseUrl
-                  ? 'Endpoint auth terdeteksi. Form siap melakukan request real.'
-                  : 'Endpoint auth belum diset. Gunakan bypass sementara.'}
+                Form ini memanggil API internal aplikasi. Integrasi Supabase dijalankan di server, bukan langsung dari frontend.
               </p>
             </div>
             <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white/90 dark:bg-neutral-900/70 p-4">
@@ -189,7 +166,7 @@ export default function AuthSection({ mode }: AuthSectionProps) {
                 Catatan
               </p>
               <p className="text-sm text-neutral-700 dark:text-neutral-300">
-                Halaman ini fokus ke UI/UX dan alur form. Manajemen session akan disiapkan di tahap berikutnya.
+                Pastikan environment server SUPABASE_URL dan SUPABASE_ANON_KEY sudah diisi agar login dan registrasi berjalan.
               </p>
             </div>
           </div>
@@ -203,14 +180,14 @@ export default function AuthSection({ mode }: AuthSectionProps) {
                   htmlFor="full-name"
                   className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2"
                 >
-                  Nama Lengkap
+                  Nama PIC
                 </label>
                 <input
                   id="full-name"
                   type="text"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
-                  placeholder="Contoh: Daffa Ardhana"
+                  placeholder="Contoh: Daffa Ardhana (IT Manager)"
                   className={cn(
                     'w-full h-11 rounded-xl px-3.5 text-sm',
                     'border border-neutral-200 dark:border-neutral-700',
@@ -297,20 +274,6 @@ export default function AuthSection({ mode }: AuthSectionProps) {
               </div>
             )}
 
-            <div className="rounded-xl border border-dashed border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900/70 p-3.5">
-              <label className="flex items-start gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={enableBypass}
-                  onChange={(event) => setEnableBypass(event.target.checked)}
-                  className="mt-0.5 h-4 w-4 rounded border-neutral-300 dark:border-neutral-600"
-                />
-                <span className="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
-                  Aktifkan bypass sementara jika API auth belum siap. Ini hanya untuk pengembangan UI.
-                </span>
-              </label>
-            </div>
-
             {errorMessage && (
               <p className="text-sm rounded-xl border border-red-200 dark:border-red-900/70 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 px-3.5 py-2.5">
                 {errorMessage}
@@ -327,7 +290,7 @@ export default function AuthSection({ mode }: AuthSectionProps) {
               type="submit"
               disabled={isSubmitting}
               className={cn(
-                'w-full h-11 rounded-xl text-sm font-medium transition-all',
+                'w-full h-11 rounded-xl text-sm font-medium transition-all cursor-pointer',
                 'bg-neutral-900 dark:bg-white text-white dark:text-black',
                 'hover:bg-neutral-700 dark:hover:bg-neutral-200',
                 'disabled:opacity-60 disabled:cursor-not-allowed'

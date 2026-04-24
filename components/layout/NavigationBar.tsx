@@ -5,8 +5,8 @@ import logo from '@/app/icon.png'
 
 const navigationLinks = [
   { label: 'Beranda', href: '/' },
-  { label: 'Produk', href: '/#produk-unggulan' },
-  { label: 'Kategori', href: '/#kategori' },
+  { label: 'Solusi', href: '/#produk-unggulan' },
+  { label: 'Domain', href: '/#kategori' },
 ]
 
 export default function NavigationBar() {
@@ -14,13 +14,13 @@ export default function NavigationBar() {
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-neutral-200 dark:border-neutral-800 bg-white/80 dark:bg-black/80 backdrop-blur-md">
       <nav className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
         {/* Navigation Links */}
-        <div className="hidden sm:flex items-center gap-0.5">
+        <div className="hidden sm:flex items-center gap-0.5 h-full">
           {/* Logo */}
           <Link
             href="/"
             className="flex items-center gap-2 shrink-0 mr-4"
           >
-            <div className="h-6 w-12 rounded-sm px-1 bg-neutral-50 dark:bg-neutral-900/60 border border-neutral-200 dark:border-neutral-800 flex items-center justify-center overflow-hidden">
+            <div className="w-20 h-10 rounded-sm px-1 bg-white flex items-center justify-center overflow-hidden">
               <Image
                 src={logo}
                 alt="Logo ADI"
@@ -28,9 +28,6 @@ export default function NavigationBar() {
                 priority
               />
             </div>
-            <span className="text-sm font-semibold tracking-tight text-neutral-900 dark:text-white">
-              Aditek Elektronik
-            </span>
           </Link>
 
         
@@ -50,7 +47,7 @@ export default function NavigationBar() {
           {/* Search Button */}
           <Link
             href="/cari"
-            aria-label="Cari produk"
+            aria-label="Cari solusi"
             className="w-9 h-9 flex items-center justify-center rounded-full border border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-150"
           >
             <svg

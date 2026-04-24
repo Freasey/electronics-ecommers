@@ -5,27 +5,27 @@ const footerSections = [
     heading: 'Jelajahi',
     links: [
       { label: 'Beranda', href: '/' },
-      { label: 'Produk Unggulan', href: '/#produk-unggulan' },
-      { label: 'Kategori', href: '/#kategori' },
+      { label: 'Solusi Unggulan', href: '/#produk-unggulan' },
+      { label: 'Domain Solusi', href: '/#kategori' },
       { label: 'Pencarian', href: '/cari' },
     ],
   },
   {
-    heading: 'Kategori',
+    heading: 'Domain',
     links: [
-      { label: 'Televisi', href: '#' },
-      { label: 'Laptop', href: '#' },
-      { label: 'Audio', href: '#' },
-      { label: 'Perangkat Rumah', href: '#' },
+      { label: 'Surveillance & Monitoring', href: '/cari?domain=Surveillance%20%26%20Monitoring' },
+      { label: 'Access Control', href: '/cari?domain=Access%20Control' },
+      { label: 'Network Infrastructure', href: '/cari?domain=Network%20Infrastructure' },
+      { label: 'Power & Continuity', href: '/cari?domain=Power%20%26%20Continuity' },
     ],
   },
   {
     heading: 'Informasi',
     links: [
-      { label: 'Tentang Kami', href: '/tentang' },
-      { label: 'Kebijakan Privasi', href: '/privasi' },
-      { label: 'Syarat Penggunaan', href: '/syarat' },
-      { label: 'Hubungi Kami', href: '/kontak' },
+      { label: 'Tentang Kami', href: '/informasi#tentang-kami' },
+      { label: 'Kebijakan Privasi', href: '/informasi#kebijakan-privasi' },
+      { label: 'Syarat Penggunaan', href: '/informasi#syarat-penggunaan' },
+      { label: 'Hubungi Kami', href: '/informasi#hubungi-kami' },
     ],
   },
 ]
@@ -55,11 +55,11 @@ export default function Footer() {
                 </svg>
               </div>
               <span className="text-sm font-semibold text-neutral-900 dark:text-white">
-                  Aditek Elektronik
+                  Aditek Security
               </span>
             </div>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed max-w-[180px]">
-                Solusi belanja produk elektronik modern dengan kualitas terjamin dan pengiriman cepat.
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed max-w-45">
+                Solusi security system dan infrastruktur untuk mendukung operasional perusahaan yang andal.
             </p>
           </div>
 
@@ -87,7 +87,7 @@ export default function Footer() {
 
         <div className="mt-10 pt-6 border-t border-neutral-100 dark:border-neutral-800/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p className="text-[11px] text-neutral-400 dark:text-neutral-600">
-            © {new Date().getFullYear()} Aditek Elektronik. Seluruh hak cipta dilindungi.
+            © {new Date().getFullYear()} Aditek Security. Seluruh hak cipta dilindungi.
           </p>
           <p className="text-[11px] text-neutral-400 dark:text-neutral-600 font-mono">
             v1.0.0

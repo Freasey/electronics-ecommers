@@ -4,7 +4,7 @@ import AuthSection from '@/components/features/AuthSection'
 export const metadata: Metadata = {
   title: 'Masuk',
   description:
-    'Masuk ke akun Aditek Elektronik. Form siap terhubung API dan mendukung bypass sementara saat API belum aktif.',
+    'Masuk ke portal Aditek Security melalui API internal dengan Supabase Auth di sisi server.',
 }
 
 export default function LoginPage() {

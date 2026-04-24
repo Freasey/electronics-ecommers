@@ -5,13 +5,13 @@ const featuredProducts = electronicProductCatalog.filter((product) => product.is
 
 export default function FeaturedProductSection() {
   return (
-    <section id="produk-unggulan" className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    <section id="produk-unggulan" className="scroll-mt-20 max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <div className="mb-6 sm:mb-8">
         <p className="text-[11px] uppercase tracking-[0.16em] text-neutral-500 dark:text-neutral-400 mb-2">
-          Pilihan Utama
+          Rekomendasi Implementasi
         </p>
         <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900 dark:text-white">
-          Produk Unggulan Kami
+          Solusi Unggulan Kami
         </h2>
       </div>
 

@@ -4,7 +4,7 @@ import AuthSection from '@/components/features/AuthSection'
 export const metadata: Metadata = {
   title: 'Daftar',
   description:
-    'Daftar akun baru Aditek Elektronik. Form siap terhubung API dan mendukung bypass sementara untuk pengembangan UI.',
+    'Daftarkan akun perusahaan di Aditek Security. Form terhubung ke API internal dengan Supabase Auth di sisi server.',
 }
 
 export default function RegisterPage() {

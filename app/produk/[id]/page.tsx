@@ -26,15 +26,15 @@ export async function generateMetadata({
 
   if (!product) {
     return {
-      title: 'Produk Tidak Ditemukan',
-      description: 'Produk yang Anda cari tidak tersedia.',
+      title: 'Solusi Tidak Ditemukan',
+      description: 'Solusi yang Anda cari tidak tersedia dalam katalog saat ini.',
     }
   }
 
   return {
-    title: `${product.name} - Detail Produk`,
+    title: `${product.name} - Detail Solusi`,
     description: product.summary,
-    keywords: [product.name, product.category, 'detail produk', 'aditek elektronik'],
+    keywords: [product.name, product.category, 'detail solusi', 'aditek security'],
     openGraph: {
       title: product.name,
       description: product.summary,
@@ -65,7 +65,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           className="inline-flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
         >
           <span aria-hidden="true">←</span>
-          Kembali ke Beranda
+          Kembali ke Katalog
         </Link>
 
         <div className="mt-5 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 p-5 sm:p-8">
@@ -89,7 +89,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
             <aside className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/30 p-5 sm:p-6 h-fit">
               <p className="text-xs uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-500 mb-2">
-                Harga
+                Estimasi Investasi
               </p>
               <p className="text-2xl sm:text-3xl font-semibold text-neutral-900 dark:text-neutral-100 mb-5">
                 {formatRupiah(product.price)}
@@ -97,7 +97,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
               <div className="mb-5">
                 <p className="text-xs uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-500 mb-2">
-                  Status Stok
+                  Kesiapan Unit
                 </p>
                 <p className="inline-flex rounded-full border border-neutral-300 dark:border-neutral-700 px-3 py-1 text-xs font-medium text-neutral-700 dark:text-neutral-300">
                   {product.stockStatus}
@@ -106,7 +106,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
               <div>
                 <p className="text-xs uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-500 mb-2">
-                  Fitur Utama
+                  Kapabilitas Utama
                 </p>
                 <ul className="space-y-2">
                   {product.keyFeatures.map((feature) => (

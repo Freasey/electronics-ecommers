@@ -1,22 +1,45 @@
 import Link from 'next/link'
 
 const categories = [
-  { name: 'Televisi', description: 'Layar UHD dan teknologi visual terbaru.', href: '#', total: '124 produk' },
-  { name: 'Laptop', description: 'Perangkat kerja dan belajar performa tinggi.', href: '#', total: '86 produk' },
-  { name: 'Audio', description: 'Speaker dan headphone dengan detail suara bersih.', href: '#', total: '142 produk' },
-  { name: 'Perangkat Rumah', description: 'Elektronik rumah hemat energi dan tahan lama.', href: '#', total: '97 produk' },
+  {
+    name: 'Surveillance & Monitoring',
+    description: 'CCTV AI, NVR, dan pusat pemantauan real-time untuk area kritikal.',
+    href: '/cari?domain=Surveillance%20%26%20Monitoring',
+    total: '124 solusi',
+  },
+  {
+    name: 'Access Control',
+    description: 'Kontrol akses pintu, turnstile, dan integrasi identitas karyawan.',
+    href: '/cari?domain=Access%20Control',
+    total: '86 solusi',
+  },
+  {
+    name: 'Network Infrastructure',
+    description: 'Switch PoE, segmentasi jaringan, dan perangkat pengelolaan trafik.',
+    href: '/cari?domain=Network%20Infrastructure',
+    total: '142 solusi',
+  },
+  {
+    name: 'Power & Continuity',
+    description: 'UPS online dan ketahanan daya untuk operasional tanpa downtime.',
+    href: '/cari?domain=Power%20%26%20Continuity',
+    total: '97 solusi',
+  },
 ]
 
 export default function CategoryHighlightSection() {
   return (
-    <section id="kategori" className="border-y border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/40">
+    <section
+      id="kategori"
+      className="scroll-mt-20 border-y border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/40"
+    >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-14">
         <div className="mb-6 sm:mb-8">
           <p className="text-[11px] uppercase tracking-[0.16em] text-neutral-500 dark:text-neutral-400 mb-2">
-            Kategori Produk
+            Domain Solusi
           </p>
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900 dark:text-white">
-            Temukan Kebutuhan Elektronik Anda
+            Temukan Prioritas Keamanan Organisasi Anda
           </h2>
         </div>
 

@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useMemo, useRef, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import ElectronicProductCard, {
   ElectronicProductCardProps,
 } from '@/components/ui/ElectronicProductCard'
@@ -14,6 +15,11 @@ const recentProducts = electronicProductCatalog
 const electronicCategories = Array.from(
   new Set(electronicProductCatalog.map((item) => item.category))
 )
+const validCategories = new Set(electronicCategories)
+
+function getInitialCategories(urlCategories: string[]) {
+  return Array.from(new Set(urlCategories.filter((category) => validCategories.has(category))))
+}
 
 function filterProducts(query: string, activeCategories: string[]) {
   const normalizedQuery = query.toLowerCase().trim()
@@ -32,25 +38,18 @@ function filterProducts(query: string, activeCategories: string[]) {
 }
 
 export default function SearchSection() {
-  const [query, setQuery] = useState('')
-  const [activeCategories, setActiveCategories] = useState<string[]>([])
-  const [results, setResults] = useState<ElectronicProductCardProps[]>(electronicProductCatalog)
-  const [hasSearched, setHasSearched] = useState(false)
+  const searchParams = useSearchParams()
+  const [query, setQuery] = useState(() => searchParams.get('q') ?? '')
+  const [activeCategories, setActiveCategories] = useState<string[]>(() =>
+    getInitialCategories(searchParams.getAll('domain'))
+  )
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const runSearch = useCallback((nextQuery: string, categories: string[]) => {
-    setResults(filterProducts(nextQuery, categories))
-    setHasSearched(true)
-  }, [])
-
-  useEffect(() => {
-    if (query !== '' || activeCategories.length > 0) {
-      runSearch(query, activeCategories)
-    } else {
-      setResults(electronicProductCatalog)
-      setHasSearched(false)
-    }
-  }, [query, activeCategories, runSearch])
+  const results = useMemo<ElectronicProductCardProps[]>(
+    () => filterProducts(query, activeCategories),
+    [query, activeCategories]
+  )
+  const hasSearched = query.trim() !== '' || activeCategories.length > 0
 
   function handleRecentProductClick(productName: string) {
     setQuery(productName)
@@ -68,7 +67,6 @@ export default function SearchSection() {
   function clearAll() {
     setQuery('')
     setActiveCategories([])
-    setHasSearched(false)
   }
 
   return (
@@ -78,7 +76,7 @@ export default function SearchSection() {
           Pencarian
         </p>
         <h1 className="text-2xl font-bold text-neutral-900 dark:text-white tracking-tight">
-          Cari Produk Elektronik
+          Cari Solusi Security dan Infrastruktur
         </h1>
       </div>
 
@@ -104,7 +102,7 @@ export default function SearchSection() {
           type="text"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Ketik nama produk elektronik..."
+          placeholder="Ketik nama solusi, perangkat, atau use case..."
           autoFocus
           className={cn(
             'w-full h-12 pl-11 pr-12 rounded-xl text-sm',
@@ -140,7 +138,7 @@ export default function SearchSection() {
 
       <div className="mb-6">
         <p className="text-[11px] font-mono text-neutral-400 dark:text-neutral-500 uppercase tracking-widest mb-2.5">
-          Kata Kunci Umum
+          Kata Kunci Cepat
         </p>
         <div className="flex flex-wrap gap-2">
           {recentProducts.map((productName) => (
@@ -163,7 +161,7 @@ export default function SearchSection() {
       <div className="mb-8 pb-8 border-b border-neutral-100 dark:border-neutral-800">
         <div className="flex items-center justify-between mb-2.5">
           <p className="text-[11px] font-mono text-neutral-400 dark:text-neutral-500 uppercase tracking-widest">
-            Kategori Elektronik
+            Domain Solusi
           </p>
           {activeCategories.length > 0 && (
             <button
@@ -200,7 +198,7 @@ export default function SearchSection() {
                 <span className="font-medium text-neutral-900 dark:text-white">
                   {results.length}
                 </span>{' '}
-                hasil ditemukan
+                solusi ditemukan
                 {(query || activeCategories.length > 0) && (
                   <button
                     onClick={clearAll}
@@ -215,7 +213,7 @@ export default function SearchSection() {
                 <span className="font-medium text-neutral-900 dark:text-white">
                   {results.length}
                 </span>{' '}
-                produk tersedia
+                solusi tersedia
               </>
             )}
           </p>
@@ -246,16 +244,16 @@ export default function SearchSection() {
               </svg>
             </div>
             <p className="text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
-              Produk tidak ditemukan
+              Solusi tidak ditemukan
             </p>
             <p className="text-xs text-neutral-400 dark:text-neutral-500 mb-5">
-              Coba kata kunci lain atau ubah filter kategori
+              Coba kata kunci lain atau ubah filter domain
             </p>
             <button
               onClick={clearAll}
               className="text-xs px-4 py-2 rounded-lg border border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
             >
-              Reset pencarian
+              Reset filter
             </button>
           </div>
         )}

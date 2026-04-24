@@ -17,10 +17,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Aditek Elektronik',
-    default: 'Aditek Elektronik - Solusi Produk Elektronik Modern',
+    template: '%s | Aditek Security',
+    default: 'Aditek Security - Solusi Security System dan Infrastruktur',
   },
-  description: 'Aplikasi penjualan produk elektronik dengan antarmuka modern dan sederhana.',
+  description:
+    'Platform katalog solusi security system, monitoring, dan infrastruktur untuk kebutuhan perusahaan.',
 }
 
 export default function RootLayout({

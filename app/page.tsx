@@ -6,11 +6,11 @@ import CategoryHighlightSection from '@/components/features/CategoryHighlightSec
 export const metadata: Metadata = {
   title: 'Aditek - Beranda',
   description:
-    'Aplikasi penjualan produk elektronik dengan tampilan modern monochrome dan navigasi sederhana.',
-  keywords: ['elektronik', 'ecommerce', 'produk elektronik', 'aditek', 'belanja online'],
+    'Katalog solusi security system dan infrastruktur enterprise dengan tampilan modern dan navigasi efisien.',
+  keywords: ['security system', 'infrastruktur IT', 'enterprise', 'aditek', 'solusi keamanan'],
   openGraph: {
     title: 'Aditek',
-    description: 'Belanja produk elektronik modern dengan pengalaman visual monochrome.',
+    description: 'Temukan solusi security system dan infrastruktur untuk kebutuhan operasional perusahaan.',
     type: 'website',
   },
 }

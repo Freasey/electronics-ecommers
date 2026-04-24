@@ -20,7 +20,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
-      aria-label={isDark ? 'Aktifkan mode terang' : 'Aktifkan mode gelap'}
+      aria-label={isDark ? 'Aktifkan tema terang' : 'Aktifkan tema gelap'}
       className="relative w-9 h-9 flex items-center justify-center rounded-full border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-200 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
     >
       {isDark ? (
