@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getProductByIdAsync } from '@/lib/productCatalogService'
+import ProductImageCarousel from '@/components/ui/ProductImageCarousel'
 
 type ProductDetailPageProps = {
   params: Promise<{ id: string }>
@@ -29,6 +30,7 @@ export async function generateMetadata({
       title: product.name,
       description: product.description,
       type: 'website',
+      images: product.primary_image_url ? [product.primary_image_url] : undefined,
     },
   }
 }
@@ -42,7 +44,6 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   }
 
   const product = await getProductByIdAsync(numericId)
-
   if (!product) {
     notFound()
   }
@@ -61,6 +62,9 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         <div className="mt-5 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 p-5 sm:p-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
+              <ProductImageCarousel images={product.images} productName={product.name} />
+
+              <div className="mt-5">
               <p className="text-xs uppercase tracking-[0.16em] text-neutral-500 dark:text-neutral-400 mb-2">
                 {product.category}
               </p>
@@ -70,6 +74,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 leading-relaxed">
                 {product.description}
               </p>
+              </div>
             </div>
 
             <aside className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/30 p-5 sm:p-6 h-fit">

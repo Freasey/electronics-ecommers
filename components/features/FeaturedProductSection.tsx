@@ -15,7 +15,7 @@ export default async function FeaturedProductSection() {
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr gap-4">
         {featuredProducts.map((product) => (
           <ElectronicProductCard
             key={product.id}
@@ -23,7 +23,7 @@ export default async function FeaturedProductSection() {
             name={product.name}
             category={product.category}
             description={product.description}
-            featured={product.is_featured}
+            primaryImageUrl={product.primary_image_url}
           />
         ))}
       </div>
