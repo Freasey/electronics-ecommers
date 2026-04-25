@@ -1,32 +1,20 @@
 import type { Metadata } from 'next'
+import { getCategorySummariesAsync } from '@/lib/productCatalogService'
 
 export const metadata: Metadata = {
   title: 'Master Kategori',
   description: 'UI master kategori pada dashboard user yang sudah login.',
 }
 
-const categories = [
-  {
-    code: 'CAT-001',
-    name: 'Surveillance',
-    slug: 'surveillance',
-    status: 'Aktif',
-  },
-  {
-    code: 'CAT-002',
-    name: 'Access Control',
-    slug: 'access-control',
-    status: 'Aktif',
-  },
-  {
-    code: 'CAT-003',
-    name: 'Network',
-    slug: 'network',
-    status: 'Draft',
-  },
-]
+export default async function MasterKategoriPage() {
+  const categorySummaries = await getCategorySummariesAsync()
+  const categories = categorySummaries.map((category, index) => ({
+    code: `CAT-${(index + 1).toString().padStart(3, '0')}`,
+    name: category.name,
+    slug: category.name.toLowerCase().replaceAll(' ', '-'),
+    status: category.totalProducts > 0 ? 'Aktif' : 'Draft',
+  }))
 
-export default function MasterKategoriPage() {
   return (
     <section className="space-y-4">
       <div className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 p-5 sm:p-6">

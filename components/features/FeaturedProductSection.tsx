@@ -1,9 +1,9 @@
 import ElectronicProductCard from '@/components/ui/ElectronicProductCard'
-import { electronicProductCatalog } from '@/lib/electronicProductCatalog'
+import { getProductsAsync } from '@/lib/productCatalogService'
 
-const featuredProducts = electronicProductCatalog.filter((product) => product.isFeaturedOnHome)
+export default async function FeaturedProductSection() {
+  const featuredProducts = await getProductsAsync({ featuredOnly: true })
 
-export default function FeaturedProductSection() {
   return (
     <section id="produk-unggulan" className="scroll-mt-20 max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
       <div className="mb-6 sm:mb-8">
@@ -17,7 +17,14 @@ export default function FeaturedProductSection() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {featuredProducts.map((product) => (
-          <ElectronicProductCard key={product.name} {...product} />
+          <ElectronicProductCard
+            key={product.id}
+            id={product.id}
+            name={product.name}
+            category={product.category}
+            description={product.description}
+            featured={product.is_featured}
+          />
         ))}
       </div>
     </section>

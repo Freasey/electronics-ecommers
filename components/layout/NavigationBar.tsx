@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import ThemeToggle from '@/components/ui/ThemeToggle'
-import logo from '@/app/icon.png'
+import logo from '@/app/original_logo.png'
 
 const navigationLinks = [
   { label: 'Beranda', href: '/' },

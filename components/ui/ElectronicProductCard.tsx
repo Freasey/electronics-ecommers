@@ -1,14 +1,11 @@
 import Link from 'next/link'
-import Badge from '@/components/ui/Badge'
 import { cn } from '@/lib/utils'
 
 export interface ElectronicProductCardProps {
   id: number
   name: string
   category: string
-  summary: string
-  badge?: string
-  visualTone: string
+  description: string
   featured?: boolean
 }
 
@@ -16,9 +13,7 @@ export default function ElectronicProductCard({
   id,
   name,
   category,
-  summary,
-  badge,
-  visualTone,
+  description,
   featured = false,
 }: ElectronicProductCardProps) {
   return (
@@ -31,7 +26,7 @@ export default function ElectronicProductCard({
       )}
     >
       <div className="relative mb-4 overflow-hidden rounded-xl border border-neutral-300/70 dark:border-neutral-700/80">
-        <div className="h-32 sm:h-36" style={{ background: visualTone }} />
+        <div className="h-32 sm:h-36" style={{ background: 'linear-gradient(145deg, #111111 0%, #2f2f2f 100%)' }} />
         <div className="absolute inset-0 bg-linear-to-t from-black/40 via-black/0 to-black/10" />
         <div className="absolute left-3 top-3 h-10 w-10 rounded-lg border border-white/30 bg-black/30 backdrop-blur-sm flex items-center justify-center text-white/90">
           <svg
@@ -51,14 +46,6 @@ export default function ElectronicProductCard({
             <path d="M16 14v6" />
           </svg>
         </div>
-        {badge ? (
-          <div className="absolute right-3 top-3">
-            <Badge
-              label={badge}
-              className="border-white/30 bg-white/15 text-white backdrop-blur-sm"
-            />
-          </div>
-        ) : null}
       </div>
 
       <p className="text-[11px] uppercase tracking-[0.16em] text-neutral-500 dark:text-neutral-400 mb-2">
@@ -68,7 +55,7 @@ export default function ElectronicProductCard({
         {name}
       </h3>
       <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-4">
-        {summary}
+        {description}
       </p>
 
       <div className="flex items-end justify-between gap-4">

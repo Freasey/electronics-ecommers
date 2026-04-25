@@ -1,33 +1,9 @@
 import Link from 'next/link'
+import { getCategorySummariesAsync } from '@/lib/productCatalogService'
 
-const categories = [
-  {
-    name: 'Surveillance & Monitoring',
-    description: 'CCTV AI, NVR, dan pusat pemantauan real-time untuk area kritikal.',
-    href: '/cari?domain=Surveillance%20%26%20Monitoring',
-    total: '124 solusi',
-  },
-  {
-    name: 'Access Control',
-    description: 'Kontrol akses pintu, turnstile, dan integrasi identitas karyawan.',
-    href: '/cari?domain=Access%20Control',
-    total: '86 solusi',
-  },
-  {
-    name: 'Network Infrastructure',
-    description: 'Switch PoE, segmentasi jaringan, dan perangkat pengelolaan trafik.',
-    href: '/cari?domain=Network%20Infrastructure',
-    total: '142 solusi',
-  },
-  {
-    name: 'Power & Continuity',
-    description: 'UPS online dan ketahanan daya untuk operasional tanpa downtime.',
-    href: '/cari?domain=Power%20%26%20Continuity',
-    total: '97 solusi',
-  },
-]
+export default async function CategoryHighlightSection() {
+  const categories = await getCategorySummariesAsync()
 
-export default function CategoryHighlightSection() {
   return (
     <section
       id="kategori"
@@ -53,11 +29,8 @@ export default function CategoryHighlightSection() {
               <p className="text-base font-semibold text-neutral-900 dark:text-neutral-100 mb-1">
                 {category.name}
               </p>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
-                {category.description}
-              </p>
               <p className="text-xs uppercase tracking-[0.12em] text-neutral-500 dark:text-neutral-500">
-                {category.total}
+                {category.totalLabel}
               </p>
             </Link>
           ))}

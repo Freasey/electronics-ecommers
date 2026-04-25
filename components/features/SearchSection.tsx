@@ -2,52 +2,89 @@
 
 import { useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { type ElectronicCatalogItem } from '@/lib/electronicProductCatalog'
 import ElectronicProductCard, {
   ElectronicProductCardProps,
 } from '@/components/ui/ElectronicProductCard'
-import { electronicProductCatalog } from '@/lib/electronicProductCatalog'
-import { cn } from '@/lib/utils'
 
-const recentProducts = electronicProductCatalog
-  .filter((item) => item.isRecent)
-  .map((item) => item.name)
+function cn(...classNames: Array<string | false | null | undefined>) {
+  return classNames.filter(Boolean).join(' ')
+}
 
-const electronicCategories = Array.from(
-  new Set(electronicProductCatalog.map((item) => item.category))
-)
-const validCategories = new Set(electronicCategories)
+type SearchSectionProps = {
+  products: ElectronicCatalogItem[]
+}
 
-function getInitialCategories(urlCategories: string[]) {
+function getInitialCategories(urlCategories: string[], validCategories: Set<string>) {
   return Array.from(new Set(urlCategories.filter((category) => validCategories.has(category))))
 }
 
-function filterProducts(query: string, activeCategories: string[]) {
+function buildSearchTokens(product: ElectronicCatalogItem) {
+  return Array.from(
+    new Set([
+      ...product.name.toLowerCase().split(' '),
+      ...product.category.toLowerCase().split(' '),
+      ...product.description.toLowerCase().split(' '),
+      ...product.features.map((item) => item.toLowerCase()).join(' ').split(' '),
+    ])
+  ).filter(Boolean)
+}
+
+function mapProductsToCardProps(products: ElectronicCatalogItem[]): ElectronicProductCardProps[] {
+  return products.map((product) => ({
+    id: product.id,
+    name: product.name,
+    category: product.category,
+    description: product.description,
+    featured: product.is_featured,
+  }))
+}
+
+function filterProducts(
+  products: ElectronicCatalogItem[],
+  query: string,
+  activeCategories: string[]
+): ElectronicProductCardProps[] {
   const normalizedQuery = query.toLowerCase().trim()
 
-  return electronicProductCatalog.filter((product) => {
+  return mapProductsToCardProps(
+    products.filter((product) => {
+      const searchTokens = buildSearchTokens(product)
+
     const matchQuery =
       normalizedQuery === '' ||
-      product.searchTokens.some((token) => token.includes(normalizedQuery)) ||
+      searchTokens.some((token) => token.includes(normalizedQuery)) ||
       product.name.toLowerCase().includes(normalizedQuery)
 
     const matchCategory =
       activeCategories.length === 0 || activeCategories.includes(product.category)
 
-    return matchQuery && matchCategory
-  })
+      return matchQuery && matchCategory
+    })
+  )
 }
 
-export default function SearchSection() {
+export default function SearchSection({ products }: SearchSectionProps) {
+  const recentProducts = useMemo(
+    () => products.filter((item) => item.is_recent).map((item) => item.name),
+    [products]
+  )
+  const electronicCategories = useMemo(
+    () => Array.from(new Set(products.map((item) => item.category).filter(Boolean))),
+    [products]
+  )
+  const validCategories = useMemo(() => new Set(electronicCategories), [electronicCategories])
+
   const searchParams = useSearchParams()
   const [query, setQuery] = useState(() => searchParams.get('q') ?? '')
   const [activeCategories, setActiveCategories] = useState<string[]>(() =>
-    getInitialCategories(searchParams.getAll('domain'))
+    getInitialCategories(searchParams.getAll('domain'), validCategories)
   )
   const inputRef = useRef<HTMLInputElement>(null)
 
   const results = useMemo<ElectronicProductCardProps[]>(
-    () => filterProducts(query, activeCategories),
-    [query, activeCategories]
+    () => filterProducts(products, query, activeCategories),
+    [products, query, activeCategories]
   )
   const hasSearched = query.trim() !== '' || activeCategories.length > 0
 

@@ -3,7 +3,10 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { FormEvent, useMemo, useState } from 'react'
-import { cn } from '@/lib/utils'
+
+function cn(...classNames: Array<string | false | null | undefined>) {
+  return classNames.filter(Boolean).join(' ')
+}
 
 type AuthMode = 'login' | 'register'
 

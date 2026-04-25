@@ -1,35 +1,20 @@
 import type { Metadata } from 'next'
+import {
+  getAvailableCategoryNamesAsync,
+  getDashboardProductRowsAsync,
+} from '@/lib/productCatalogService'
 
 export const metadata: Metadata = {
   title: 'Master Product',
   description: 'UI master product pada dashboard user yang sudah login.',
 }
 
-const products = [
-  {
-    sku: 'PRD-0001',
-    name: 'AI CCTV 4MP',
-    category: 'Surveillance',
-    price: 'Rp 3.250.000',
-    status: 'Aktif',
-  },
-  {
-    sku: 'PRD-0002',
-    name: 'Smart Door Controller',
-    category: 'Access Control',
-    price: 'Rp 2.780.000',
-    status: 'Aktif',
-  },
-  {
-    sku: 'PRD-0003',
-    name: 'Managed PoE Switch 24 Port',
-    category: 'Network',
-    price: 'Rp 6.150.000',
-    status: 'Draft',
-  },
-]
+export default async function MasterProductPage() {
+  const [products, categories] = await Promise.all([
+    getDashboardProductRowsAsync(),
+    getAvailableCategoryNamesAsync(),
+  ])
 
-export default function MasterProductPage() {
   return (
     <section className="space-y-4">
       <div className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 p-5 sm:p-6">
@@ -63,9 +48,11 @@ export default function MasterProductPage() {
           />
           <select className="h-10 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 text-sm text-neutral-800 dark:text-neutral-100">
             <option>Semua Kategori</option>
-            <option>Surveillance</option>
-            <option>Access Control</option>
-            <option>Network</option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
           </select>
           <select className="h-10 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 text-sm text-neutral-800 dark:text-neutral-100">
             <option>Semua Status</option>
@@ -78,7 +65,6 @@ export default function MasterProductPage() {
           <table className="min-w-full text-sm">
             <thead className="bg-neutral-50 dark:bg-neutral-900/60">
               <tr className="text-left">
-                <th className="px-4 py-3 font-medium text-neutral-600 dark:text-neutral-300">SKU</th>
                 <th className="px-4 py-3 font-medium text-neutral-600 dark:text-neutral-300">Nama Product</th>
                 <th className="px-4 py-3 font-medium text-neutral-600 dark:text-neutral-300">Kategori</th>
                 <th className="px-4 py-3 font-medium text-neutral-600 dark:text-neutral-300">Harga</th>
@@ -89,10 +75,8 @@ export default function MasterProductPage() {
             <tbody>
               {products.map((product) => (
                 <tr key={product.sku} className="border-t border-neutral-200 dark:border-neutral-800">
-                  <td className="px-4 py-3 text-neutral-700 dark:text-neutral-200">{product.sku}</td>
                   <td className="px-4 py-3 text-neutral-900 dark:text-neutral-100">{product.name}</td>
                   <td className="px-4 py-3 text-neutral-700 dark:text-neutral-300">{product.category}</td>
-                  <td className="px-4 py-3 text-neutral-700 dark:text-neutral-300">{product.price}</td>
                   <td className="px-4 py-3">
                     <span className="inline-flex rounded-full px-2.5 py-1 text-xs border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300">
                       {product.status}
