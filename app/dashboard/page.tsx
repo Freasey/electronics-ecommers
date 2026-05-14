@@ -1,34 +1,34 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { getDashboardCategoriesAsync, getDashboardProductsAsync } from '@/lib/dashboardCatalogService'
 
 export const metadata: Metadata = {
-  title: 'Dashboard User',
-  description: 'Halaman dashboard khusus user login untuk pengelolaan data master.',
+  title: 'Dashboard Admin',
+  description: 'Halaman dashboard admin untuk pengelolaan data master.',
 }
 
-const quickStats = [
-  {
-    label: 'Total Kategori',
-    value: '12',
-    note: 'Kategori aktif di katalog',
-  },
-  {
-    label: 'Total Product',
-    value: '148',
-    note: 'Produk yang ditampilkan',
-  },
-  {
-    label: 'Perlu Review',
-    value: '9',
-    note: 'Item menunggu validasi',
-  },
-]
+export default async function DashboardHomePage() {
+  const [categories, products] = await Promise.all([
+    getDashboardCategoriesAsync(),
+    getDashboardProductsAsync(),
+  ])
 
-export default function DashboardHomePage() {
+  const totalKategori = categories.length
+  const totalProduk = products.length
+  const tanpaGambar = products.filter((p) => p.images.length === 0).length
+  const tanpaDokumen = products.filter((p) => p.documents.length === 0).length
+
+  const stats = [
+    { label: 'Total Kategori', value: totalKategori, note: 'Kategori aktif di katalog' },
+    { label: 'Total Produk', value: totalProduk, note: 'Produk yang terdaftar' },
+    { label: 'Tanpa Gambar', value: tanpaGambar, note: 'Produk belum ada foto' },
+    { label: 'Tanpa Dokumentasi', value: tanpaDokumen, note: 'Produk belum ada dokumen' },
+  ]
+
   return (
     <section className="space-y-5">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {quickStats.map((stat) => (
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {stats.map((stat) => (
           <article
             key={stat.label}
             className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 p-4"
@@ -47,7 +47,7 @@ export default function DashboardHomePage() {
           Modul Master Data
         </h2>
         <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
-          Pilih modul untuk mengelola data utama. Saat ini yang disiapkan adalah UI, sedangkan logika CRUD akan diintegrasikan berikutnya.
+          Pilih modul untuk mengelola data utama produk dan kategori.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -67,7 +67,7 @@ export default function DashboardHomePage() {
           >
             <p className="text-base font-semibold text-neutral-900 dark:text-neutral-100 mb-1">Master Product</p>
             <p className="text-sm text-neutral-600 dark:text-neutral-400">
-              Kelola informasi utama product seperti SKU, kategori, status, dan harga.
+              Kelola informasi utama produk seperti SKU, kategori, status, dan harga.
             </p>
           </Link>
         </div>

@@ -31,20 +31,20 @@ export default function AuthSection({ mode }: AuthSectionProps) {
     () =>
       isLogin
         ? {
-            eyebrow: 'Akses Portal Proyek',
-            title: 'Masuk ke portal perusahaan Anda',
-            subtitle: 'Lanjutkan pengelolaan kebutuhan security system dan infrastruktur dalam satu dashboard.',
+            eyebrow: 'Panel Admin',
+            title: 'Masuk ke Dashboard Admin',
+            subtitle: 'Kelola produk, pesanan, dan data toko dalam satu panel administrasi yang terintegrasi.',
             submitText: 'Masuk',
-            altPrompt: 'Belum punya akun perusahaan?',
+            altPrompt: 'Belum punya akun admin?',
             altLinkLabel: 'Daftarkan sekarang',
             altHref: '/daftar',
           }
         : {
-            eyebrow: 'Registrasi Perusahaan',
-            title: 'Daftarkan akun perusahaan baru',
-            subtitle: 'Buka akses ke katalog B2B, proposal teknis, dan alur pengadaan yang lebih terstruktur.',
+            eyebrow: 'Registrasi Admin',
+            title: 'Buat Akun Administrator Baru',
+            subtitle: 'Tambahkan akun admin baru untuk mengelola sistem. Pastikan hanya diberikan kepada personel yang berwenang.',
             submitText: 'Daftarkan Akun',
-            altPrompt: 'Sudah punya akun perusahaan?',
+            altPrompt: 'Sudah punya akun admin?',
             altLinkLabel: 'Masuk di sini',
             altHref: '/masuk',
           },
@@ -158,18 +158,18 @@ export default function AuthSection({ mode }: AuthSectionProps) {
           <div className="space-y-4">
             <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white/90 dark:bg-neutral-900/70 p-4">
               <p className="text-xs uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-500 mb-1">
-                Status Auth
+                Akses Terbatas
               </p>
               <p className="text-sm text-neutral-700 dark:text-neutral-300">
-                Form ini memanggil API internal aplikasi. Integrasi Supabase dijalankan di server, bukan langsung dari frontend.
+                Halaman ini hanya dapat diakses oleh admin internal. Hubungi superadmin jika Anda butuh akun baru atau mengalami kendala login.
               </p>
             </div>
             <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white/90 dark:bg-neutral-900/70 p-4">
               <p className="text-xs uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-500 mb-1">
-                Catatan
+                Keamanan
               </p>
               <p className="text-sm text-neutral-700 dark:text-neutral-300">
-                Pastikan environment server SUPABASE_URL dan SUPABASE_ANON_KEY sudah diisi agar login dan registrasi berjalan.
+                Gunakan email dan password yang telah didaftarkan oleh superadmin. Jangan bagikan kredensial Anda kepada siapa pun.
               </p>
             </div>
           </div>
