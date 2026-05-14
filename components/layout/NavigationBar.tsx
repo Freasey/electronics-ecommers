@@ -68,19 +68,6 @@ export default function NavigationBar() {
 
           {/* Theme Toggle */}
           <ThemeToggle />
-
-          <Link
-            href="/masuk"
-            className="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md border border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors duration-150"
-          >
-            Masuk
-          </Link>
-          <Link
-            href="/daftar"
-            className="inline-flex items-center px-3.5 py-1.5 text-sm font-medium rounded-md bg-neutral-900 dark:bg-white text-white dark:text-black hover:bg-neutral-700 dark:hover:bg-neutral-200 transition-colors duration-150"
-          >
-            Daftar
-          </Link>
         </div>
       </nav>
     </header>

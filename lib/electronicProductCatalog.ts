@@ -10,6 +10,15 @@ export interface ElectronicCatalogProductImage {
   position: number
 }
 
+export interface ElectronicCatalogProductDocument {
+  id: number
+  title: string
+  description: string
+  gdrive_url: string
+  doc_type: string
+  position: number
+}
+
 export interface ElectronicCatalogItem {
   id: number
   name: string
@@ -23,4 +32,5 @@ export interface ElectronicCatalogItem {
   is_featured: boolean
   images: ElectronicCatalogProductImage[]
   primary_image_url: string
+  documents: ElectronicCatalogProductDocument[]
 }

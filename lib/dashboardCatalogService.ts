@@ -1,5 +1,8 @@
 import { createSupabaseServerClient } from '@/lib/auth/supabaseServer'
-import { type ElectronicCatalogProductImage } from '@/lib/electronicProductCatalog'
+import {
+  type ElectronicCatalogProductDocument,
+  type ElectronicCatalogProductImage,
+} from '@/lib/electronicProductCatalog'
 
 const PRODUCT_IMAGE_BUCKET = process.env.SUPABASE_PRODUCT_IMAGE_BUCKET ?? 'product-images'
 
@@ -17,6 +20,15 @@ type SupabaseProductImageRecord = {
   position?: unknown
 }
 
+type SupabaseProductDocumentRecord = {
+  id?: unknown
+  title?: unknown
+  description?: unknown
+  gdrive_url?: unknown
+  doc_type?: unknown
+  position?: unknown
+}
+
 type SupabaseProductRecord = {
   id?: unknown
   name?: unknown
@@ -28,6 +40,24 @@ type SupabaseProductRecord = {
   features?: unknown
   kategori?: unknown
   product_images?: unknown
+  product_documents?: unknown
+}
+
+export type DashboardProductDocumentPayload = {
+  id: number
+  title: string
+  description: string
+  gdrive_url: string
+  doc_type: string
+  position: number
+}
+
+export type DashboardProductDocumentInput = {
+  title: string
+  description: string
+  gdrive_url: string
+  doc_type: string
+  position?: number
 }
 
 type SupabaseCategoryRelation = {
@@ -60,6 +90,7 @@ export type DashboardProductPayload = {
   is_recent: boolean
   is_featured: boolean
   images: ElectronicCatalogProductImage[]
+  documents: DashboardProductDocumentPayload[]
 }
 
 export type DashboardProductUpsertInput = {
@@ -159,6 +190,41 @@ function toCategoryRelation(value: unknown): SupabaseCategoryRelation | undefine
   return value as SupabaseCategoryRelation
 }
 
+function toProductDocumentRows(value: unknown): DashboardProductDocumentPayload[] {
+  if (!Array.isArray(value)) {
+    return []
+  }
+
+  return value
+    .map((item) => {
+      if (!item || typeof item !== 'object' || Array.isArray(item)) {
+        return undefined
+      }
+
+      const record = item as SupabaseProductDocumentRecord
+      const id = toNumberValue(record.id)
+      const title = toStringValue(record.title)
+      const gdriveUrl = toStringValue(record.gdrive_url)
+
+      if (id === undefined || !title || !gdriveUrl) {
+        return undefined
+      }
+
+      const result: ElectronicCatalogProductDocument = {
+        id,
+        title,
+        description: toStringValue(record.description),
+        gdrive_url: gdriveUrl,
+        doc_type: toStringValue(record.doc_type) || 'general',
+        position: toNumberValue(record.position) ?? 0,
+      }
+
+      return result
+    })
+    .filter((doc): doc is DashboardProductDocumentPayload => doc !== undefined)
+    .sort((a, b) => a.position - b.position)
+}
+
 function toProductImageRows(value: unknown) {
   if (!Array.isArray(value)) {
     return []
@@ -238,6 +304,7 @@ function mapProductRecord(record: SupabaseProductRecord): DashboardProductPayloa
     is_recent: toBooleanValue(record.is_recent) ?? false,
     is_featured: toBooleanValue(record.is_featured) ?? false,
     images: toProductImageRows(record.product_images),
+    documents: toProductDocumentRows(record.product_documents),
   }
 }
 
@@ -399,6 +466,14 @@ export async function getDashboardProductsAsync(): Promise<DashboardProductPaylo
         id,
         image_url,
         is_primary,
+        position
+      ),
+      product_documents (
+        id,
+        title,
+        description,
+        gdrive_url,
+        doc_type,
         position
       )
     `)
@@ -601,6 +676,114 @@ export async function setPrimaryProductImageAsync(productId: number, imageId: st
 
   if (error) {
     throw new Error(error.message || 'Gagal menentukan primary image.')
+  }
+}
+
+export async function addProductDocumentAsync(
+  productId: number,
+  input: DashboardProductDocumentInput,
+): Promise<DashboardProductDocumentPayload> {
+  const supabase = createSupabaseServerClient()
+
+  const { data: existingRows } = await supabase
+    .from('product_documents')
+    .select('position')
+    .eq('produk_id', productId)
+
+  const maxPosition = (existingRows ?? []).reduce((max, item) => {
+    const pos = toNumberValue((item as SupabaseProductDocumentRecord).position) ?? 0
+    return Math.max(max, pos)
+  }, 0)
+
+  const payload = {
+    produk_id: productId,
+    title: input.title.trim(),
+    description: input.description.trim(),
+    gdrive_url: input.gdrive_url.trim(),
+    doc_type: input.doc_type || 'general',
+    position: input.position ?? maxPosition + 1,
+  }
+
+  const { data, error } = await supabase
+    .from('product_documents')
+    .insert(payload)
+    .select('id, title, description, gdrive_url, doc_type, position')
+    .single()
+
+  if (error || !data) {
+    throw new Error(error?.message || 'Gagal menambah dokumen.')
+  }
+
+  const record = data as SupabaseProductDocumentRecord
+  const id = toNumberValue(record.id)
+  if (id === undefined) {
+    throw new Error('Dokumen berhasil ditambah tetapi ID tidak ditemukan.')
+  }
+
+  return {
+    id,
+    title: toStringValue(record.title),
+    description: toStringValue(record.description),
+    gdrive_url: toStringValue(record.gdrive_url),
+    doc_type: toStringValue(record.doc_type) || 'general',
+    position: toNumberValue(record.position) ?? 0,
+  }
+}
+
+export async function updateProductDocumentAsync(
+  documentId: number,
+  productId: number,
+  input: DashboardProductDocumentInput,
+): Promise<DashboardProductDocumentPayload> {
+  const supabase = createSupabaseServerClient()
+
+  const payload = {
+    title: input.title.trim(),
+    description: input.description.trim(),
+    gdrive_url: input.gdrive_url.trim(),
+    doc_type: input.doc_type || 'general',
+    ...(input.position !== undefined ? { position: input.position } : {}),
+  }
+
+  const { data, error } = await supabase
+    .from('product_documents')
+    .update(payload)
+    .eq('id', documentId)
+    .eq('produk_id', productId)
+    .select('id, title, description, gdrive_url, doc_type, position')
+    .single()
+
+  if (error || !data) {
+    throw new Error(error?.message || 'Gagal mengubah dokumen.')
+  }
+
+  const record = data as SupabaseProductDocumentRecord
+  const id = toNumberValue(record.id)
+  if (id === undefined) {
+    throw new Error('Data dokumen tidak valid setelah diperbarui.')
+  }
+
+  return {
+    id,
+    title: toStringValue(record.title),
+    description: toStringValue(record.description),
+    gdrive_url: toStringValue(record.gdrive_url),
+    doc_type: toStringValue(record.doc_type) || 'general',
+    position: toNumberValue(record.position) ?? 0,
+  }
+}
+
+export async function deleteProductDocumentAsync(documentId: number, productId: number) {
+  const supabase = createSupabaseServerClient()
+
+  const { error } = await supabase
+    .from('product_documents')
+    .delete()
+    .eq('id', documentId)
+    .eq('produk_id', productId)
+
+  if (error) {
+    throw new Error(error.message || 'Gagal menghapus dokumen.')
   }
 }
 

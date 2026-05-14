@@ -1,5 +1,6 @@
 import {
   type ElectronicCatalogItem,
+  type ElectronicCatalogProductDocument,
   type ElectronicCatalogProductImage,
 } from '@/lib/electronicProductCatalog'
 import { createSupabaseServerClient } from '@/lib/auth/supabaseServer'
@@ -32,6 +33,15 @@ type SupabaseProductImageRecord = {
   id?: unknown
   image_url?: unknown
   is_primary?: unknown
+  position?: unknown
+}
+
+type SupabaseProductDocumentRecord = {
+  id?: unknown
+  title?: unknown
+  description?: unknown
+  gdrive_url?: unknown
+  doc_type?: unknown
   position?: unknown
 }
 
@@ -191,6 +201,39 @@ function toProductImageRecords(value: unknown) {
     })
 }
 
+function toProductDocumentRecords(value: unknown): ElectronicCatalogProductDocument[] {
+  if (!Array.isArray(value)) {
+    return []
+  }
+
+  return value
+    .map((item) => {
+      if (!item || typeof item !== 'object' || Array.isArray(item)) {
+        return undefined
+      }
+
+      const record = item as SupabaseProductDocumentRecord
+      const id = toNumberValue(record.id)
+      const title = toStringValue(record.title)
+      const gdriveUrl = toStringValue(record.gdrive_url)
+
+      if (id === undefined || !title || !gdriveUrl) {
+        return undefined
+      }
+
+      return {
+        id,
+        title,
+        description: toStringValue(record.description),
+        gdrive_url: gdriveUrl,
+        doc_type: toStringValue(record.doc_type) || 'general',
+        position: toNumberValue(record.position) ?? 0,
+      }
+    })
+    .filter((doc): doc is ElectronicCatalogProductDocument => doc !== undefined)
+    .sort((a, b) => a.position - b.position)
+}
+
 function buildSearchTokens(product: Pick<ElectronicCatalogItem, 'name' | 'category' | 'description' | 'features'>) {
   return Array.from(
     new Set([
@@ -233,6 +276,7 @@ function mapSupabaseProductToCatalogItem(record: SupabaseProductRecord) {
     is_featured: toBooleanValue(record.is_featured) ?? false,
     images,
     primary_image_url: primaryImage?.image_url ?? '',
+    documents: toProductDocumentRecords(record.product_documents),
   }
 
   return product
@@ -244,17 +288,25 @@ async function getCatalogProductsAsync(): Promise<ElectronicCatalogItem[]> {
     const { data, error } = await supabase
       .from('produk')
       .select(`
-          *,
-          kategori (
+        *,
+        kategori (
           id,
           name
-            ),
-            product_images (
-            id,
-            image_url,
-            is_primary,
-            position
-          )
+        ),
+        product_images (
+          id,
+          image_url,
+          is_primary,
+          position
+        ),
+        product_documents (
+          id,
+          title,
+          description,
+          gdrive_url,
+          doc_type,
+          position
+        )
       `)
       .order('id', { ascending: true })
     if (error || !Array.isArray(data) || data.length === 0) {

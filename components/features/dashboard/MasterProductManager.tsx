@@ -1,7 +1,10 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import type { ElectronicCatalogProductImage } from '@/lib/electronicProductCatalog'
+import type {
+  ElectronicCatalogProductDocument,
+  ElectronicCatalogProductImage,
+} from '@/lib/electronicProductCatalog'
 
 type DashboardCategory = {
   id: string
@@ -20,6 +23,30 @@ type DashboardProduct = {
   is_recent: boolean
   is_featured: boolean
   images: ElectronicCatalogProductImage[]
+  documents: ElectronicCatalogProductDocument[]
+}
+
+type DocFormState = {
+  title: string
+  gdrive_url: string
+  doc_type: string
+  description: string
+}
+
+const DOC_TYPES = [
+  { value: 'general', label: 'General' },
+  { value: 'datasheet', label: 'Datasheet' },
+  { value: 'manual', label: 'Manual' },
+  { value: 'certificate', label: 'Sertifikat' },
+  { value: 'warranty', label: 'Garansi' },
+  { value: 'brochure', label: 'Brosur' },
+]
+
+const initialDocFormState: DocFormState = {
+  title: '',
+  gdrive_url: '',
+  doc_type: 'general',
+  description: '',
 }
 
 type ProductFormState = {
@@ -73,6 +100,11 @@ export default function MasterProductManager({
   const [editingId, setEditingId] = useState<number | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
+
+  const [docFormState, setDocFormState] = useState<DocFormState>(initialDocFormState)
+  const [editingDocId, setEditingDocId] = useState<number | null>(null)
+  const [isSavingDoc, setIsSavingDoc] = useState(false)
+  const [docMessage, setDocMessage] = useState<string | null>(null)
 
   const visibleProducts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
@@ -246,6 +278,102 @@ export default function MasterProductManager({
       setMessage('Produk berhasil dihapus.')
     } catch (error: unknown) {
       setMessage(error instanceof Error ? error.message : 'Terjadi kesalahan saat menghapus produk.')
+    }
+  }
+
+  function resetDocForm() {
+    setDocFormState(initialDocFormState)
+    setEditingDocId(null)
+    setDocMessage(null)
+  }
+
+  function startEditDoc(doc: ElectronicCatalogProductDocument) {
+    setEditingDocId(doc.id)
+    setDocFormState({
+      title: doc.title,
+      gdrive_url: doc.gdrive_url,
+      doc_type: doc.doc_type,
+      description: doc.description,
+    })
+    setDocMessage(null)
+  }
+
+  async function handleSaveDoc() {
+    if (!editingId) return
+
+    const title = docFormState.title.trim()
+    const gdriveUrl = docFormState.gdrive_url.trim()
+
+    if (!title) {
+      setDocMessage('Judul dokumen wajib diisi.')
+      return
+    }
+    if (!gdriveUrl) {
+      setDocMessage('Link Google Drive wajib diisi.')
+      return
+    }
+
+    setIsSavingDoc(true)
+    setDocMessage(null)
+
+    try {
+      const endpoint = `/api/dashboard/produk/${editingId}/dokumen`
+      const body = JSON.stringify({
+        ...(editingDocId !== null ? { id: editingDocId } : {}),
+        title,
+        gdrive_url: gdriveUrl,
+        doc_type: docFormState.doc_type,
+        description: docFormState.description,
+      })
+
+      const response = await fetch(endpoint, {
+        method: editingDocId !== null ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+      })
+
+      const payload = (await response.json()) as ApiResponse<unknown>
+
+      if (!response.ok || !payload.success) {
+        throw new Error(payload.message || 'Gagal menyimpan dokumen.')
+      }
+
+      await reloadProducts()
+      resetDocForm()
+      setDocMessage(editingDocId !== null ? 'Dokumen berhasil diperbarui.' : 'Dokumen berhasil ditambahkan.')
+    } catch (error: unknown) {
+      setDocMessage(error instanceof Error ? error.message : 'Terjadi kesalahan saat menyimpan dokumen.')
+    } finally {
+      setIsSavingDoc(false)
+    }
+  }
+
+  async function handleDeleteDoc(docId: number) {
+    if (!editingId) return
+
+    const confirmed = window.confirm('Hapus dokumen ini?')
+    if (!confirmed) return
+
+    setDocMessage(null)
+
+    try {
+      const response = await fetch(`/api/dashboard/produk/${editingId}/dokumen`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: docId }),
+      })
+
+      const payload = (await response.json()) as ApiResponse<null>
+
+      if (!response.ok || !payload.success) {
+        throw new Error(payload.message || 'Gagal menghapus dokumen.')
+      }
+
+      await reloadProducts()
+      if (editingDocId === docId) resetDocForm()
+      setDocMessage('Dokumen berhasil dihapus.')
+    } catch (error: unknown) {
+      setDocMessage(error instanceof Error ? error.message : 'Terjadi kesalahan saat menghapus dokumen.')
     }
   }
 
@@ -430,6 +558,123 @@ export default function MasterProductManager({
             )}
             
         </div>
+
+        {editingId !== null && (
+          <div className="space-y-3 mb-3">
+            <div className="rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 p-3">
+              <p className="text-xs uppercase tracking-[0.12em] text-neutral-500 dark:text-neutral-400 mb-3">
+                Dokumentasi Produk
+              </p>
+
+              {editingProduct && editingProduct.documents.length > 0 && (
+                <div className="space-y-2 mb-3">
+                  {editingProduct.documents.map((doc) => (
+                    <div
+                      key={doc.id}
+                      className="flex items-start justify-between gap-3 rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2"
+                    >
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100 truncate">
+                          {doc.title}
+                        </p>
+                        <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                          {DOC_TYPES.find((t) => t.value === doc.doc_type)?.label ?? doc.doc_type}
+                          {doc.description ? ` · ${doc.description}` : ''}
+                        </p>
+                        <a
+                          href={doc.gdrive_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-blue-600 dark:text-blue-400 hover:underline truncate block max-w-xs"
+                        >
+                          {doc.gdrive_url}
+                        </a>
+                      </div>
+                      <div className="flex gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => startEditDoc(doc)}
+                          className="h-7 px-2.5 rounded border border-neutral-300 dark:border-neutral-700 text-xs text-neutral-700 dark:text-neutral-200"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteDoc(doc.id)}
+                          className="h-7 px-2.5 rounded border border-red-300 dark:border-red-800 text-xs text-red-700 dark:text-red-300"
+                        >
+                          Hapus
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <p className="text-xs text-neutral-600 dark:text-neutral-400">
+                  {editingDocId !== null ? 'Edit dokumen' : 'Tambah dokumen baru'}
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <input
+                    type="text"
+                    value={docFormState.title}
+                    onChange={(e) => setDocFormState((prev) => ({ ...prev, title: e.target.value }))}
+                    placeholder="Judul dokumen"
+                    className="h-9 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-950 px-3 text-sm text-neutral-900 dark:text-neutral-100"
+                  />
+                  <select
+                    value={docFormState.doc_type}
+                    onChange={(e) => setDocFormState((prev) => ({ ...prev, doc_type: e.target.value }))}
+                    className="h-9 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-950 px-3 text-sm text-neutral-800 dark:text-neutral-100"
+                  >
+                    {DOC_TYPES.map((t) => (
+                      <option key={t.value} value={t.value}>{t.label}</option>
+                    ))}
+                  </select>
+                  <input
+                    type="url"
+                    value={docFormState.gdrive_url}
+                    onChange={(e) => setDocFormState((prev) => ({ ...prev, gdrive_url: e.target.value }))}
+                    placeholder="Link Google Drive"
+                    className="h-9 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-950 px-3 text-sm text-neutral-900 dark:text-neutral-100 sm:col-span-2"
+                  />
+                  <input
+                    type="text"
+                    value={docFormState.description}
+                    onChange={(e) => setDocFormState((prev) => ({ ...prev, description: e.target.value }))}
+                    placeholder="Keterangan singkat (opsional)"
+                    className="h-9 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-950 px-3 text-sm text-neutral-900 dark:text-neutral-100 sm:col-span-2"
+                  />
+                </div>
+
+                {docMessage && (
+                  <p className="text-xs text-neutral-600 dark:text-neutral-400">{docMessage}</p>
+                )}
+
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={handleSaveDoc}
+                    disabled={isSavingDoc}
+                    className="h-8 px-3 rounded-lg bg-neutral-800 dark:bg-neutral-200 text-white dark:text-black text-xs font-medium disabled:opacity-60"
+                  >
+                    {isSavingDoc ? 'Menyimpan…' : editingDocId !== null ? 'Perbarui Dokumen' : 'Tambah Dokumen'}
+                  </button>
+                  {editingDocId !== null && (
+                    <button
+                      type="button"
+                      onClick={resetDocForm}
+                      className="h-8 px-3 rounded-lg border border-neutral-300 dark:border-neutral-700 text-xs text-neutral-700 dark:text-neutral-200"
+                    >
+                      Batal
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="flex gap-2">
           <button

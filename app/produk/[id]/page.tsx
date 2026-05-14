@@ -77,11 +77,13 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               </div>
             </div>
 
-            <aside className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/30 p-5 sm:p-6 h-fit">
-              <p className="text-xs uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-500 mb-2">
-                Status
-              </p>
-              <p className="text-base font-medium text-neutral-900 dark:text-neutral-100 mb-5">{product.status || '-'}</p>
+            <aside className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/30 p-5 sm:p-6 h-fit space-y-5">
+              <div>
+                <p className="text-xs uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-500 mb-2">
+                  Status
+                </p>
+                <p className="text-base font-medium text-neutral-900 dark:text-neutral-100">{product.status || '-'}</p>
+              </div>
 
               <div>
                 <p className="text-xs uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-500 mb-2">
@@ -98,6 +100,50 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                   ))}
                 </ul>
               </div>
+
+              {product.documents.length > 0 && (
+                <div>
+                  <p className="text-xs uppercase tracking-[0.15em] text-neutral-500 dark:text-neutral-500 mb-2">
+                    Dokumentasi
+                  </p>
+                  <ul className="space-y-2">
+                    {product.documents.map((doc) => (
+                      <li key={doc.id}>
+                        <a
+                          href={doc.gdrive_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-start gap-2.5 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2.5 hover:border-neutral-400 dark:hover:border-neutral-500 transition-colors group"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="mt-0.5 h-4 w-4 shrink-0 text-neutral-400 group-hover:text-neutral-600 dark:group-hover:text-neutral-300"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                          </svg>
+                          <span className="min-w-0">
+                            <span className="block text-sm font-medium text-neutral-900 dark:text-neutral-100 group-hover:underline">
+                              {doc.title}
+                            </span>
+                            {doc.description && (
+                              <span className="block text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
+                                {doc.description}
+                              </span>
+                            )}
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </aside>
           </div>
         </div>
